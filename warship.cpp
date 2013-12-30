@@ -42,6 +42,9 @@ void Warship::hurt(int type, int damage) {
 			armor -= damage/2;
 			break;
 	}
+	if (health <= 0) {
+		sunk = true;
+	}
 }
 
 void Warship::fireWeapon(int weaponindex, Warship target) {
