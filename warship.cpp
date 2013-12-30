@@ -20,7 +20,7 @@ Warship::~Warship() {
 }
 
 void Warship::clear() {
-	SDL_FreeSurface(spritesheet);
+	//SDL_FreeSurface(spritesheet);
 	delete [] weapons;
 }
 
@@ -30,7 +30,7 @@ void Warship::copy(const Warship & other) {
 	health = other.health;
 	maxarmor = other.maxarmor;
 	armor = other.armor;
-	spritesheet = SDL_ConvertSurface(other.spritesheet, other.spritesheet->format, other.spritesheet->flags);
+	//spritesheet = SDL_ConvertSurface(other.spritesheet, other.spritesheet->format, other.spritesheet->flags);
 	for (int i = 0; i < weaponcount; i++) {
 		weapons[i] = other.weapons[i];
 	}

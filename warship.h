@@ -84,7 +84,7 @@ class Warship {
 		/**
 		 * The spritesheet depicting the warship in all eight valid directions.
 		 */
-		SDL_Surface* spritesheet;
+		//SDL_Surface* spritesheet;
 		Weapon* weapons;
 };
 #endif

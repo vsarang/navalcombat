@@ -4,10 +4,10 @@ COMPILER_OPTS = -c -g -O0 -Wfatal-errors -Werror -lSDL_image -lSDL_ttf -lSDL_mix
 
 all: navalcombat
 
-navalcombat: main.o
+navalcombat: main.o battlefield.o warship.o
 	$(COMPILER) -o $@ $^
 
-main.o: main.cpp battlefield.o warship.o
+main.o: main.cpp warship.h warship.cpp battlefield.o
 	$(COMPILER) $(COMPILER_OPTS) $<
 
 battlefield.o: battlefield.cpp battlefield.h warship.h warship.cpp

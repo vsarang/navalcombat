@@ -1,5 +1,5 @@
 /**
- * Class defintion for the game board of naval combat.
+ * Class defintion for the naval combat game board.
  * @file battlefield.h
  * @author Vikrant Sarang
  * @date January 2014
@@ -37,8 +37,8 @@ class Battlefield {
 
 	private:
 		int** maparray;
-		SDL_Surface* map;
-		SDL_Surface* board;
+		//SDL_Surface* map;
+		//SDL_Surface* board;
 		Warship*** warshipmap;
 		int height;
 		int width;
