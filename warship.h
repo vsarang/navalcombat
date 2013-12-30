@@ -1,5 +1,8 @@
 /**
  * Broad definition of warships to be used to implement every boat type.
+ * @file warship.h
+ * @author Vikrant Sarang
+ * @date January 2014
  */
 #ifndef WARSHIP_H
 #define WARSHIP_H

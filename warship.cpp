@@ -1,4 +1,8 @@
-// implementation of the abstract class warship
+/**
+ * @file warship.cpp
+ * @author Vikrant Sarang
+ * @date January 2014
+ */
 #include "warship.h"
 
 Warship::Warship(const Warship & other) {

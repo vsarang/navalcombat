@@ -7,7 +7,10 @@ all: navalcombat
 navalcombat: main.o
 	$(COMPILER) -o $@ $^
 
-main.o: main.cpp warship.o
+main.o: main.cpp battlefield.o warship.o
+	$(COMPILER) $(COMPILER_OPTS) $<
+
+battlefield.o: battlefield.cpp battlefield.h warship.h warship.cpp
 	$(COMPILER) $(COMPILER_OPTS) $<
 
 warship.o: warship.cpp warship.h
