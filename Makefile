@@ -1,8 +1,10 @@
+EXENAME = navalcombat
+
 COMPILER = g++
 WARNINGS = -Wchar-subscripts -Wparentheses -Wreturn-type -Wmissing-braces -Wundef -Wshadow
 COMPILER_OPTS = -c -g -O0 -Wfatal-errors -Werror -lSDL_image -lSDL_ttf -lSDL_mixer $(WARNINGS)
 
-all: navalcombat
+all: $(EXENAME)
 
 navalcombat: main.o battlefield.o warship.o
 	$(COMPILER) -o $@ $^
@@ -15,3 +17,6 @@ battlefield.o: battlefield.cpp battlefield.h warship.h warship.cpp
 
 warship.o: warship.cpp warship.h
 	$(COMPILER) $(COMPILER_OPTS) $<
+
+clean:
+	-rm -f *.o *.h.gch $(EXENAME)
