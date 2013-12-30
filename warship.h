@@ -51,7 +51,7 @@ class Warship {
 		 * @param int weaponindex The index of the weapon to be fired.
 		 * @param const Warship & target The ship to fire upon.
 		 */
-		virtual void fireWeapon(int weaponindex, const Warship & target);
+		virtual void fireWeapon(int weaponindex, Warship & target);
 		virtual int getRange(int weaponindex) const;
 		/**
 		 * Sets the rotation of the ship. If an invalid parameter is given, the rotation is unchanged.

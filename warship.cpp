@@ -35,19 +35,33 @@ void Warship::copy(const Warship & other) {
 void Warship::hurt(int type, int damage) {
 	switch(type) {
 		case 0:
-			health -= damage;
+			if (armor > 0) {
+				armor -= damage;
+			} else {
+				health -= damage;
+			}
 			break;
 		case 1:
-			health -= damage/2;
-			armor -= damage/2;
+			if (armor > 0) {
+				health -= (int)(damage * 0.5);
+				armor -= (int)(damage * 0.5);
+			} else {
+				health -= (int)(damage * 0.75);
+			}
 			break;
+	}
+	if (armor < 0) {
+		armor = 0;
+	}
+	if (health < 0) {
+		health = 0;
 	}
 	if (health <= 0) {
 		sunk = true;
 	}
 }
 
-void Warship::fireWeapon(int weaponindex, Warship target) {
+void Warship::fireWeapon(int weaponindex, Warship & target) {
 	Weapon weapon = weapons[weaponindex];
 	// if there are enough rounds to fire, hurt the target and update rounds
 	if (weapon.rounds >= weapon.volleysize) {
@@ -66,5 +80,7 @@ int Warship::getRange(int weaponindex) const {
 }
 
 void Warship::setRotation(int rot) {
-	rotation = rot;
+	if (rot >= 0 && rot <= 7) {
+		rotation = rot;
+	}
 }
