@@ -11,13 +11,15 @@
 #include "SDL/SDL.h"
 #include "SDL/SDL_image.h"
 #include "SDL/SDL_ttf.h"
+#include "battlefieldgui.h"
 #include "warship.h"
+#include <iostream>
 #include <string>
 
 class Battlefield {
 	public:
 		/**
-		 * Variables the primary eight directions for ease of use.
+		 * Static variables for the primary eight directions for ease of use.
 		 */
 		static const int NORTH = 0;
 		static const int NORTHEAST = 1;
@@ -37,8 +39,8 @@ class Battlefield {
 
 	private:
 		int** maparray;
-		//SDL_Surface* map;
-		//SDL_Surface* board;
+		SDL_Surface* map;
+		SDL_Surface* board;
 		Warship*** warshipmap;
 		int height;
 		int width;

@@ -22,8 +22,8 @@ Battlefield::Battlefield(int w, int h) {
 		}
 	}
 
-	//map = NULL;
-	//board = NULL;	
+	map = NULL;
+	board = NULL;	
 }
 
 Battlefield::Battlefield(const Battlefield & other) {
@@ -61,8 +61,8 @@ void Battlefield::clear() {
 	warshipmap = NULL;
 
 	// free both SDL surfaces
-	//SDL_FreeSurface(map);
-	//SDL_FreeSurface(board);
+	SDL_FreeSurface(map);
+	SDL_FreeSurface(board);
 }
 
 void Battlefield::copy(const Battlefield & other) {
@@ -80,6 +80,6 @@ void Battlefield::copy(const Battlefield & other) {
 	}
 
 	// copy the SDL surfaces
-	//map = SDL_ConvertSurface(other.map, other.map->format, other.map->flags);
-	//board = SDL_ConvertSurface(other.board, other.board->format, other.board->flags);
+	map = SDL_ConvertSurface(other.map, other.map->format, other.map->flags);
+	board = SDL_ConvertSurface(other.board, other.board->format, other.board->flags);
 }
