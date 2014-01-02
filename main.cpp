@@ -1,10 +1,14 @@
 #include <iostream>
+#include "SDL/SDL.h"
+#include "SDL/SDL_image.h"
 #include "battlefield.h"
 #include "battlefieldgui.h"
 #include "warship.h"
 
 int main (int argc, char* args[]) {
-	Battlefield b(80, 35);
+	Battlefield b(32, 24);
 	b.generateMap();
-	b.printMap();
+	//b.printMap();
+	BattlefieldGUI bGUI = BattlefieldGUI();
+	bGUI.run(b);
 }

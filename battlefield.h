@@ -11,7 +11,6 @@
 #include "SDL/SDL.h"
 #include "SDL/SDL_image.h"
 #include "SDL/SDL_ttf.h"
-#include "battlefieldgui.h"
 #include "warship.h"
 #include <stdlib.h>
 #include <time.h>
@@ -32,6 +31,9 @@ class Battlefield {
 		static const int WEST = 6;
 		static const int NORTHWEST = 7;
 
+		SDL_Surface* map;
+		SDL_Surface* board;
+
 		Battlefield(int w, int h);
 		Battlefield(const Battlefield & other);
 		~Battlefield();
@@ -40,11 +42,12 @@ class Battlefield {
 		void copy(const Battlefield & other);
 		void generateMap();
 		void printMap() const;
+		int** getMapArray() const;
+		int getWidth() const;
+		int getHeight() const;
 
 	private:
 		int** maparray;
-		SDL_Surface* map;
-		SDL_Surface* board;
 		Warship*** warshipmap;
 		int height;
 		int width;

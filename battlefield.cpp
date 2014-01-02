@@ -157,6 +157,16 @@ void Battlefield::printMap() const {
 		std::cout << "-";
 	}
 	std::cout << std::endl;
-	//std::cout << "width: " << width << std::endl;
-	//std::cout << "height: " << height << std::endl;
+}
+
+int** Battlefield::getMapArray() const {
+	return maparray;
+}
+
+int Battlefield::getWidth() const {
+	return width;
+}
+
+int Battlefield::getHeight() const {
+	return height;
 }
