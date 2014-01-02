@@ -13,12 +13,12 @@ Battlefield::Battlefield(int w, int h) {
 	// initialize maparray to all zeroes and warshipmap to all null pointers
 	maparray = new int*[w];
 	warshipmap = new Warship**[w];
-	for (int i = 0; i < w; i++) {
-		maparray[i] = new int[h];
-		warshipmap[i] = new Warship*[h];
-		for (int j = 0; j < h; j++) {
-			warshipmap[i][j] = NULL;
-			maparray[i][j] = 0;
+	for (int x = 0; x < w; x++) {
+		maparray[x] = new int[h];
+		warshipmap[x] = new Warship*[h];
+		for (int y = 0; y < h; y++) {
+			warshipmap[x][y] = NULL;
+			maparray[x][y] = 0;
 		}
 	}
 	srand(time(NULL));
@@ -125,13 +125,13 @@ void Battlefield::generateIsland(int x, int y, int prevX, int prevY, int iterati
 }
 
 bool Battlefield::shouldGrow(int iterations) const {
-	int scale = 0;
+	float scale = 0;
 	if (width < height) {
-		scale = width/20;
+		scale = 200.0/width;
 	} else {
-		scale = height/20;
+		scale = 200.0/height;
 	}
-	return (rand() % 100) > iterations*scale;
+	return ((float)(rand() % 100)) > iterations*scale;
 }
 
 bool Battlefield::validLocation(int x, int y) const {
@@ -143,8 +143,8 @@ void Battlefield::printMap() const {
 		std::cout << "-";
 	}
 	std::cout << std::endl;
-	for (int x = 0; x < width; x++) {
-		for (int y = 0; y < height; y++) {
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++) {
 			if (maparray[x][y] == 1) {
 				std::cout << "X";
 			} else {
@@ -157,4 +157,6 @@ void Battlefield::printMap() const {
 		std::cout << "-";
 	}
 	std::cout << std::endl;
+	//std::cout << "width: " << width << std::endl;
+	//std::cout << "height: " << height << std::endl;
 }
