@@ -4,6 +4,7 @@
 #include "warship.h"
 
 int main (int argc, char* args[]) {
-	Battlefield b(10, 10);
-	std::cout << "hello world" << std::endl;
+	Battlefield b(100, 100);
+	b.generateMap();
+	b.printMap();
 }

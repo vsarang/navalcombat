@@ -13,6 +13,8 @@
 #include "SDL/SDL_ttf.h"
 #include "battlefieldgui.h"
 #include "warship.h"
+#include <stdlib.h>
+#include <time.h>
 #include <iostream>
 #include <string>
 
@@ -36,6 +38,8 @@ class Battlefield {
 		Battlefield & operator=(const Battlefield & other);
 		void clear();
 		void copy(const Battlefield & other);
+		void generateMap();
+		void printMap() const;
 
 	private:
 		int** maparray;
@@ -44,6 +48,10 @@ class Battlefield {
 		Warship*** warshipmap;
 		int height;
 		int width;
+
+		void generateIsland(int x, int y, int prevX, int prevY, int iterations);
+		bool shouldGrow(int iterations) const;
+		bool validLocation(int x, int y) const;
 };
 
 #endif

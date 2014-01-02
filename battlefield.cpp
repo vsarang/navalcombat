@@ -21,9 +21,9 @@ Battlefield::Battlefield(int w, int h) {
 			maparray[i][j] = 0;
 		}
 	}
-
+	srand(time(NULL));
 	map = NULL;
-	board = NULL;	
+	board = NULL;
 }
 
 Battlefield::Battlefield(const Battlefield & other) {
@@ -82,4 +82,79 @@ void Battlefield::copy(const Battlefield & other) {
 	// copy the SDL surfaces
 	map = SDL_ConvertSurface(other.map, other.map->format, other.map->flags);
 	board = SDL_ConvertSurface(other.board, other.board->format, other.board->flags);
+}
+
+void Battlefield::generateMap() {
+	int n = rand() % 10 + 3;
+	for (int i = 0; i < n; i++) {
+		int x = rand() % width;
+		int y = rand() % height;
+		generateIsland(x, y, x, y, 0);
+	}
+}
+
+void Battlefield::generateIsland(int x, int y, int prevX, int prevY, int iterations) {
+	// up
+	if (shouldGrow(iterations)) {
+		if (prevY != y-1 && validLocation(x, y-1) && maparray[x][y-1] == 0) {
+			maparray[x][y-1] = 1;
+			generateIsland(x, y-1, x, y, iterations+1);
+		}
+	}
+	// down
+	if (shouldGrow(iterations)) {
+		if (prevY != y+1 && validLocation(x, y+1) && maparray[x][y+1] == 0) {
+			maparray[x][y+1] = 1;
+			generateIsland(x, y+1, x, y, iterations+1);
+		}
+	}
+	// left
+	if (shouldGrow(iterations)) {
+		if (prevX != x-1 && validLocation(x-1, y) && maparray[x-1][y] == 0) {
+			maparray[x-1][y] = 1;
+			generateIsland(x-1, y, x, y, iterations+1);
+		}
+	}
+	// right
+	if (shouldGrow(iterations)) {
+		if (prevX != x+1 && validLocation(x+1, y) && maparray[x+1][y] == 0) {
+			maparray[x+1][y] = 1;
+			generateIsland(x+1, y, x, y, iterations+1);
+		}
+	}
+}
+
+bool Battlefield::shouldGrow(int iterations) const {
+	int scale = 0;
+	if (width < height) {
+		scale = width/20;
+	} else {
+		scale = height/20;
+	}
+	return (rand() % 100) > iterations*scale;
+}
+
+bool Battlefield::validLocation(int x, int y) const {
+	return (x > 0 && y > 0 && x < width && y < height);
+}
+
+void Battlefield::printMap() const {
+	for (int i = 0; i < width; i++) {
+		std::cout << "-";
+	}
+	std::cout << std::endl;
+	for (int x = 0; x < width; x++) {
+		for (int y = 0; y < height; y++) {
+			if (maparray[x][y] == 1) {
+				std::cout << "X";
+			} else {
+				std::cout << " ";
+			}
+		}
+		std::cout << "|" << std::endl;
+	}
+	for (int i = 0; i < width; i++) {
+		std::cout << "-";
+	}
+	std::cout << std::endl;
 }
