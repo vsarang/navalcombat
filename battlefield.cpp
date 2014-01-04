@@ -135,7 +135,7 @@ bool Battlefield::shouldGrow(int iterations) const {
 }
 
 bool Battlefield::validLocation(int x, int y) const {
-	return (x > 0 && y > 0 && x < width && y < height);
+	return (x >= 0 && y >= 0 && x < width && y < height);
 }
 
 void Battlefield::printMap() const {
