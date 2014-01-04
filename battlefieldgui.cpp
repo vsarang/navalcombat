@@ -14,6 +14,7 @@ BattlefieldGUI::BattlefieldGUI() {
 	screen_height = 480;
 	screen_bpp = 32;
 	frame_title = "title";
+	scroll_speed = 3;
 	if (!init()) {
 		std::cout << "failed to initialize" << std::endl;
 	}
@@ -139,27 +140,29 @@ void BattlefieldGUI::drawTile(int x, int y, SDL_Surface* tile) {
 void BattlefieldGUI::drawMap(const Battlefield & b) {
 	int** map_array = b.getMapArray();
 	// find the bounding rectangle of the camera
-	int startx = (int)(camera.x/20);
-	int starty = (int)(camera.y/20);
-	int endx = (int)((camera.x + screen_width)/20);
-	int endy = (int)((camera.y + screen_height)/20);
+	int startx = int (camera.x/20)-1;
+	int starty = int (camera.y/20)-1;
+	int endx = int ((camera.x + screen_width)/20);
+	int endy = int ((camera.y + screen_height)/20);
+
+	//std::cout << startx << " | " << camera.x << std::endl;
 
 	int mapstartx = startx;
 	int mapstarty = starty;
 	// draw black to the left and top of the map
 	for (; mapstartx < 0; mapstartx++) {
-		for (int y = starty; y < endy; y++) {
+		for (int y = starty; y <= endy; y++) {
 			drawTile(mapstartx, y, tile_black);
 		}
 	}
 	for(; mapstarty < 0; mapstarty++) {
-		for (int x = startx; x < endx; x++) {
+		for (int x = startx; x <= endx; x++) {
 			drawTile(x, mapstarty, tile_black);
 		}
 	}
 	// draw the map
-	for (int x = mapstartx; x < endx && x < b.getWidth(); x++) {
-		for (int y = mapstarty; y < endy && y < b.getHeight(); y++) {
+	for (int x = mapstartx; x <= endx && x < b.getWidth(); x++) {
+		for (int y = mapstarty; y <= endy && y < b.getHeight(); y++) {
 			if (map_array[x][y] == 1) {
 				drawTile(x, y, land_full);
 			} else if (map_array[x][y] == 0) {
@@ -168,13 +171,13 @@ void BattlefieldGUI::drawMap(const Battlefield & b) {
 		}
 	}
 	// draw black to the right and below the map
-	for (int x = b.getWidth(); x < endx; x++) {
-		for (int y = starty; y < endy; y++) {
+	for (int x = b.getWidth(); x <= endx; x++) {
+		for (int y = starty; y <= endy; y++) {
 			drawTile(x, y, tile_black);
 		}
 	}
-	for (int y = b.getHeight(); y < endy; y++) {
-		for (int x = startx; x < endx; x++) {
+	for (int y = b.getHeight(); y <= endy; y++) {
+		for (int x = startx; x <= endx; x++) {
 			drawTile(x, y, tile_black);
 		}
 	}
@@ -184,6 +187,10 @@ int BattlefieldGUI::run(const Battlefield & b) {
 	//moveCamera(1,1);
 	drawMap(b);
 	bool quit = false;
+	bool scrollRight = false;
+	bool scrollLeft = false;
+	bool scrollUp = false;
+	bool scrollDown = false;
 	while (quit == false) {
 		// start frame timer
 		fps.start();
@@ -193,22 +200,32 @@ int BattlefieldGUI::run(const Battlefield & b) {
 				quit = true;
 			}
 			// process key presses
-			if (event.type == SDL_KEYDOWN) {
-				switch (event.key.keysym.sym) {
-					case SDLK_RIGHT:
-						moveCamera(20,0);
-						break;
-					case SDLK_LEFT:
-						moveCamera(-20,0);
-						break;
-					case SDLK_UP:
-						moveCamera(0,-20);
-						break;
-					case SDLK_DOWN:
-						moveCamera(0,20);
-						break;
-				}
+			switch (event.key.keysym.sym) {
+				case SDLK_RIGHT:
+					scrollRight = !scrollRight;
+					break;
+				case SDLK_LEFT:
+					scrollLeft = !scrollLeft;
+					break;
+				case SDLK_UP:
+					scrollUp = !scrollUp;
+					break;
+				case SDLK_DOWN:
+					scrollDown = !scrollDown;
+					break;
 			}
+		}
+		if (scrollRight) {
+			moveCamera(scroll_speed,0);
+		}
+		if (scrollLeft) {
+			moveCamera(-1*scroll_speed,0);
+		}
+		if (scrollUp) {
+			moveCamera(0,-1*scroll_speed);
+		}
+		if (scrollDown) {
+			moveCamera(0,scroll_speed);
 		}
 		drawMap(b);
 		if (SDL_Flip(screen) == -1) {

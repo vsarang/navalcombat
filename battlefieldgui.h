@@ -37,6 +37,7 @@ class BattlefieldGUI {
 		int screen_bpp;
 		std::string frame_title;
 		Timer fps;
+		int scroll_speed;
 		SDL_Surface* screen;
 		SDL_Surface* map;
 
