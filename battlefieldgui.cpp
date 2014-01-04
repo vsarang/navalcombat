@@ -71,11 +71,13 @@ bool BattlefieldGUI::load_files() {
 	coast_island = load_image("tiles/coast_island.png");
 	land_full = load_image("tiles/land_full.png");
 	water_full = load_image("tiles/water_full.png");
+	tile_black = load_image("tiles/black.png");
 	if (coast_diagonal_spritesheet == NULL ||
-		coast_peninsula_spritesheet == NULL ||
-		coast_island == NULL ||
-		land_full == NULL ||
-		water_full == NULL) {
+			coast_peninsula_spritesheet == NULL ||
+			coast_island == NULL ||
+			land_full == NULL ||
+			water_full == NULL ||
+			tile_black == NULL) {
 		return false;
 	}
 	return true;
@@ -87,6 +89,7 @@ void BattlefieldGUI::clean_up() {
 	SDL_FreeSurface(coast_island);
 	SDL_FreeSurface(land_full);
 	SDL_FreeSurface(water_full);
+	SDL_FreeSurface(tile_black);
 	SDL_Quit();
 }
 
@@ -96,7 +99,10 @@ bool BattlefieldGUI::init() {
 		return false;
 	}	
 	// set up screen
-	screen = SDL_SetVideoMode(screen_width, screen_height, screen_bpp, SDL_SWSURFACE);
+	screen = SDL_SetVideoMode(screen_width,
+					screen_height,
+					screen_bpp,
+					SDL_SWSURFACE);
 	if (screen == NULL) {
 		return false;
 	}
@@ -106,43 +112,117 @@ bool BattlefieldGUI::init() {
 	return true;
 }
 
-void BattlefieldGUI::drawMap(const Battlefield & b) {
-	int** map_array = b.getMapArray();
+void BattlefieldGUI::drawBorder(int startx, int starty, int endx, int endy) {
+	for (int y = starty; y < 0; y++) {
+		for (int x = startx; x < 0; x++) {
 
-	int startx = (int)(camera.x/20.0);
-	int starty = (int)(camera.y/20.0);
-	int endx = (int)((camera.x + screen_width)/20.0);
-	int endy = (int)((camera.y + screen_height)/20.0);
-	if (startx < 0) {
-		startx = 0;
-	}
-	if (starty < 0) {
-		starty = 0;
-	}
-	for (int x = startx; x < endx && x < b.getWidth(); x++) {
-		for (int y = starty; y < endy && y < b.getHeight(); y++) {
-			int relx = x*20 - camera.x;
-			int rely = y*20 - camera.y;
-			if (map_array[x][y] == 1) {
-				apply_surface(relx, rely, land_full, screen);
-			} else if (map_array[x][y] == 0) {
-				apply_surface(relx, rely, water_full, screen);
-			}
+		}
+		for (int x = screen_width/20.0; x < endx; x++) {
+
 		}
 	}
 
-	SDL_Flip(screen);
+	for (int x = startx; x < 0; x++) {
+		for (int y = starty; y < 0; y++) {
+
+		}
+		//for (int y = 
+	}
 }
 
-void BattlefieldGUI::run(const Battlefield & b) {
+void BattlefieldGUI::drawTile(int x, int y, SDL_Surface* tile) {
+	int relx = x*20 - camera.x;
+	int rely = y*20 - camera.y;
+	apply_surface(relx, rely, tile, screen);
+}
+
+void BattlefieldGUI::drawMap(const Battlefield & b) {
+	int** map_array = b.getMapArray();
+	// find the bounding rectangle of the camera
+	int startx = (int)(camera.x/20);
+	int starty = (int)(camera.y/20);
+	int endx = (int)((camera.x + screen_width)/20);
+	int endy = (int)((camera.y + screen_height)/20);
+
+	int mapstartx = startx;
+	int mapstarty = starty;
+	// draw black to the left and top of the map
+	for (; mapstartx < 0; mapstartx++) {
+		for (int y = starty; y < endy; y++) {
+			drawTile(mapstartx, y, tile_black);
+		}
+	}
+	for(; mapstarty < 0; mapstarty++) {
+		for (int x = startx; x < endx; x++) {
+			drawTile(x, mapstarty, tile_black);
+		}
+	}
+	// draw the map
+	for (int x = mapstartx; x < endx && x < b.getWidth(); x++) {
+		for (int y = mapstarty; y < endy && y < b.getHeight(); y++) {
+			if (map_array[x][y] == 1) {
+				drawTile(x, y, land_full);
+			} else if (map_array[x][y] == 0) {
+				drawTile(x, y, water_full);
+			}
+		}
+	}
+	// draw black to the right and below the map
+	for (int x = b.getWidth(); x < endx; x++) {
+		for (int y = starty; y < endy; y++) {
+			drawTile(x, y, tile_black);
+		}
+	}
+	for (int y = b.getHeight(); y < endy; y++) {
+		for (int x = startx; x < endx; x++) {
+			drawTile(x, y, tile_black);
+		}
+	}
+}
+
+int BattlefieldGUI::run(const Battlefield & b) {
+	//moveCamera(1,1);
 	drawMap(b);
-	apply_surface(0, 0, land_full, screen);
 	bool quit = false;
 	while (quit == false) {
+		// start frame timer
+		fps.start();
+		// process events
 		while(SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
 				quit = true;
 			}
+			// process key presses
+			if (event.type == SDL_KEYDOWN) {
+				switch (event.key.keysym.sym) {
+					case SDLK_RIGHT:
+						moveCamera(20,0);
+						break;
+					case SDLK_LEFT:
+						moveCamera(-20,0);
+						break;
+					case SDLK_UP:
+						moveCamera(0,-20);
+						break;
+					case SDLK_DOWN:
+						moveCamera(0,20);
+						break;
+				}
+			}
+		}
+		drawMap(b);
+		if (SDL_Flip(screen) == -1) {
+			return 1;
+		}
+		// cap framerate
+		if (fps.get_ticks() < 1000/FRAMES_PER_SECOND) {
+			SDL_Delay(1000/FRAMES_PER_SECOND - fps.get_ticks());
 		}
 	}
+	return 0;
+}
+
+void BattlefieldGUI::moveCamera(int x, int y) {
+	camera.x += x;
+	camera.y += y;
 }

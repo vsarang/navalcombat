@@ -6,7 +6,7 @@
 #include "warship.h"
 
 int main (int argc, char* args[]) {
-	Battlefield b(32, 24);
+	Battlefield b(15, 24);
 	b.generateMap();
 	//b.printMap();
 	BattlefieldGUI bGUI = BattlefieldGUI();
