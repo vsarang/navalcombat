@@ -7,13 +7,13 @@ LSDL = -lSDL -lSDL_image
 
 all: $(EXENAME)
 
-navalcombat: main.o battlefieldgui.o battlefield.o  warship.o
+navalcombat: main.o battlefieldgui.o battlefield.o warship.o timer.o
 	$(COMPILER) -o $@ $^ $(LSDL)
 
 main.o: main.cpp battlefieldgui.o warship.o battlefield.o
 	$(COMPILER) $(COMPILER_OPTS) $<
 
-battlefieldgui.o: battlefieldgui.cpp battlefieldgui.h battlefield.o warship.o
+battlefieldgui.o: battlefieldgui.cpp battlefieldgui.h battlefield.o warship.o timer.o
 	$(COMPILER) $(COMPILER_OPTS) $<
 
 battlefield.o: battlefield.cpp battlefield.h warship.o
@@ -22,6 +22,8 @@ battlefield.o: battlefield.cpp battlefield.h warship.o
 warship.o: warship.cpp warship.h
 	$(COMPILER) $(COMPILER_OPTS) $<
 
+timer.o: timer.cpp timer.h
+	$(COMPILER) $(COMPILER_OPTS) $<
+
 clean:
 	-rm -f *.o *.h.gch $(EXENAME)
-	clear
