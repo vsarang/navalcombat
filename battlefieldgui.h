@@ -21,38 +21,46 @@ class BattlefieldGUI {
 	public:
 		SDL_Rect camera;
 		SDL_Event event;
+		Battlefield* battlefield;
 
-		BattlefieldGUI();
+		BattlefieldGUI(Battlefield* b);
 		~BattlefieldGUI();
 		SDL_Surface* load_image(std::string filename);
  		void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* dest);
-		void drawMap(const Battlefield & b);
-		int run(const Battlefield & b);
+		void drawMap();
+		int run();
 		void moveCamera(int x, int y);
 	private:
-		static const int FRAMES_PER_SECOND = 30;
+		static const int FRAMES_PER_SECOND = 120;
 
 		int screen_width;
 		int screen_height;
 		int screen_bpp;
+		int scroll_speed;
 		std::string frame_title;
 		Timer fps;
-		int scroll_speed;
 		SDL_Surface* screen;
-		SDL_Surface* map;
+		Warship* selected_warship;
 
-		SDL_Surface* coast_diagonal_spritesheet;
-		SDL_Surface* coast_peninsula_spritesheet;
-		SDL_Surface* land_full;
-		SDL_Surface* water_full;
-		SDL_Surface* coast_island;
-		SDL_Surface* tile_black;
+		SDL_Rect clip[4];
+		static const int num_tiles = 7;
+		SDL_Surface* tiles[num_tiles];
+		static const int WATER_FULL = 0;
+		static const int LAND_FULL = 1;
+		static const int TILE_BLACK = 2;
+		static const int LAND_ISLAND = 3;
+		static const int COAST_DIAGONAL_SPRITESHEET = 4;
+		static const int COAST_PENINSULA_SPRITESHEET = 5;
+		static const int WHITE_BORDER = 6;
 
  		bool load_files();
  		void clean_up();
  		bool init();
-		void drawTile(int x, int y, SDL_Surface* tile);
+		void drawTile(int x, int y, int tile);
 		void drawBorder(int startx, int starty, int endx, int endy);
+		void leftClick(const SDL_Rect & coords);
+		void rightClick(const SDL_Rect & coords);
+		SDL_Rect coordsToGrid(const SDL_Rect & coords);
 };
 
-#endif
+ #endif

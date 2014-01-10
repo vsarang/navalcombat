@@ -163,6 +163,14 @@ int** Battlefield::getMapArray() const {
 	return maparray;
 }
 
+int Battlefield::getCell(int x, int y) const {
+	if (x >= 0 && y >= 0 && x < width && y < height) {
+		return maparray[x][y];
+	} else {
+		return -1;
+	}
+}
+
 int Battlefield::getWidth() const {
 	return width;
 }

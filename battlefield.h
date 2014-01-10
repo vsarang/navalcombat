@@ -45,6 +45,7 @@ class Battlefield {
 		int** getMapArray() const;
 		int getWidth() const;
 		int getHeight() const;
+		int getCell(int x, int y) const;
 
 	private:
 		int** maparray;
