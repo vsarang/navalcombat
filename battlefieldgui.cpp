@@ -164,6 +164,19 @@ void BattlefieldGUI::drawMap() {
 	}
 }
 
+void BattlefieldGUI::drawWarships() {
+	std::vector<Warship> warships = battlefield->getWarshipList();
+	for (int i = 0; i < warships.size(); i++) {
+		SDL_Rect loc = warships[i].getLocation();
+	}
+}
+
+void BattlefieldGUI::drawWarship(Warship ship) {
+	SDL_Rect loc = ship.getLocation();
+	int rot = ship.getRotation();
+	
+}
+
 int BattlefieldGUI::run() {
 	//moveCamera(1,1);
 	drawMap();
@@ -234,6 +247,7 @@ int BattlefieldGUI::run() {
 			moveCamera(0,scroll_speed);
 		}
 		drawMap();
+		drawWarships();
 		drawTile(mouse_grid.x, mouse_grid.y, WHITE_BORDER);
 		if (SDL_Flip(screen) == -1) {
 			return 1;

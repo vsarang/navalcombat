@@ -12,18 +12,13 @@ Battlefield::Battlefield(int w, int h) {
 
 	// initialize maparray to all zeroes and warshipmap to all null pointers
 	maparray = new int*[w];
-	warshipmap = new Warship**[w];
 	for (int x = 0; x < w; x++) {
 		maparray[x] = new int[h];
-		warshipmap[x] = new Warship*[h];
 		for (int y = 0; y < h; y++) {
-			warshipmap[x][y] = NULL;
 			maparray[x][y] = 0;
 		}
 	}
 	srand(time(NULL));
-	map = NULL;
-	board = NULL;
 }
 
 Battlefield::Battlefield(const Battlefield & other) {
@@ -43,26 +38,13 @@ Battlefield & Battlefield::operator=(const Battlefield & other) {
 
 void Battlefield::clear() {
 	for (int i = 0; i < width; i++) {
-		for (int j = 0; j < height; j++) {
-			// free every warship on the warshipmap
-			delete warshipmap[i][j];
-			warshipmap[i][j] = NULL;
-		}
 		// free every column in both warshipmap and maparray
 		delete [] maparray[i];
-		delete [] warshipmap[i];
 		maparray[i] = NULL;
-		warshipmap[i] = NULL;
 	}
 	// free both arrays pointers as well
 	delete [] maparray;
-	delete [] warshipmap;
 	maparray = NULL;
-	warshipmap = NULL;
-
-	// free both SDL surfaces
-	SDL_FreeSurface(map);
-	SDL_FreeSurface(board);
 }
 
 void Battlefield::copy(const Battlefield & other) {
@@ -72,16 +54,10 @@ void Battlefield::copy(const Battlefield & other) {
 
 	for (int i = 0; i < width; i++) {
 		for (int j = 0; j < height; j++) {
-			// copy every warship on the warship map
-			warshipmap[i][j] = new Warship(*(other.warshipmap[i][j]));
 			// copy battlefield map cells
 			maparray[i][j] = other.maparray[i][j];
 		}
 	}
-
-	// copy the SDL surfaces
-	map = SDL_ConvertSurface(other.map, other.map->format, other.map->flags);
-	board = SDL_ConvertSurface(other.board, other.board->format, other.board->flags);
 }
 
 void Battlefield::generateMap() {
@@ -177,4 +153,31 @@ int Battlefield::getWidth() const {
 
 int Battlefield::getHeight() const {
 	return height;
+}
+
+void Battlefield::addWarship(const Warship & ship) {
+	warships.push_back(ship);
+}
+
+std::vector<Warship> Battlefield::getWarshipList() const {
+	return warships;
+}
+
+void Battlefield::spawnShips() {
+	int x = 0;
+	int y = 0;
+	while (getCell(x, y) != WATER) {
+		if (x < width) {
+			x++;
+		} else {
+			x = 0;
+			y++;
+		}
+	}
+	Warship_Corvette ship();
+	SDL_Rect coords;
+	coords.x = x;
+	coords.y = y;
+	ship.setLocation(coords);
+	addWarship(ship);
 }

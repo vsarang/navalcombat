@@ -33,6 +33,7 @@ class Warship {
 				Munition munition;
 		};
 
+		Warship();
 		Warship(const Warship & other);
 		virtual Warship & operator=(const Warship & other);
 		virtual ~Warship();
@@ -61,8 +62,12 @@ class Warship {
 		 * @param int rot The target rotation between 0 and 7.
 		 */
 		void setRotation(int rot);
+		void setLocation(const SDL_Rect & coords);
+		int getWarshipType() const;
+		int getRotation() const;
+		SDL_Rect getLocation() const;
 
-	private:
+	protected:
 		bool sunk;
 		/**
 		 * The current rotation of the ship from 0 to 7.
@@ -81,10 +86,8 @@ class Warship {
 		int maxarmor;
 		int armor;
 		int weaponcount;
-		/**
-		 * The spritesheet depicting the warship in all eight valid directions.
-		 */
-		//SDL_Surface* spritesheet;
+		int warshiptype;
+		SDL_Rect location;
 		Weapon* weapons;
 };
 #endif

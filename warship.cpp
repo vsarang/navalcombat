@@ -5,6 +5,12 @@
  */
 #include "warship.h"
 
+Warship::Warship() {
+	location.x = 0;
+	location.y = 0;
+	rotation = 0;
+}
+
 Warship::Warship(const Warship & other) {
 	copy(other);
 }
@@ -20,7 +26,6 @@ Warship::~Warship() {
 }
 
 void Warship::clear() {
-	//SDL_FreeSurface(spritesheet);
 	delete [] weapons;
 }
 
@@ -30,7 +35,8 @@ void Warship::copy(const Warship & other) {
 	health = other.health;
 	maxarmor = other.maxarmor;
 	armor = other.armor;
-	//spritesheet = SDL_ConvertSurface(other.spritesheet, other.spritesheet->format, other.spritesheet->flags);
+	location = other.location;
+	warshiptype = other.warshiptype;
 	for (int i = 0; i < weaponcount; i++) {
 		weapons[i] = other.weapons[i];
 	}
@@ -87,4 +93,20 @@ void Warship::setRotation(int rot) {
 	if (rot >= 0 && rot <= 7) {
 		rotation = rot;
 	}
+}
+
+void Warship::setLocation(const SDL_Rect & coords) {
+	location = coords;
+}
+
+SDL_Rect Warship::getLocation() const {
+	return location;
+}
+
+int Warship::getRotation() const {
+	return rotation;
+}
+
+int Warship::getWarshipType() const {
+	return warshiptype;
 }

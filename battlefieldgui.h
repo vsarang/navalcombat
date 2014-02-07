@@ -27,7 +27,6 @@ class BattlefieldGUI {
 		~BattlefieldGUI();
 		SDL_Surface* load_image(std::string filename);
  		void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* dest);
-		void drawMap();
 		int run();
 		void moveCamera(int x, int y);
 	private:
@@ -60,6 +59,8 @@ class BattlefieldGUI {
 		void drawBorder(int startx, int starty, int endx, int endy);
 		void leftClick(const SDL_Rect & coords);
 		void rightClick(const SDL_Rect & coords);
+		void drawMap();
+		void drawWarships();
 		SDL_Rect coordsToGrid(const SDL_Rect & coords);
 };
 
