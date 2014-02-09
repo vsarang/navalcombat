@@ -61,6 +61,7 @@ class BattlefieldGUI {
 		void rightClick(const SDL_Rect & coords);
 		void drawMap();
 		void drawWarships();
+		void drawWarship(Warship ship);
 		SDL_Rect coordsToGrid(const SDL_Rect & coords);
 };
 
