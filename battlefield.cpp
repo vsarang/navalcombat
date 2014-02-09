@@ -155,29 +155,11 @@ int Battlefield::getHeight() const {
 	return height;
 }
 
-void Battlefield::addWarship(const Warship & ship) {
+void Battlefield::addWarship(int team, const Warship & ship) {
 	warships.push_back(ship);
+	warshipmask.push_back(team);
 }
 
 std::vector<Warship> Battlefield::getWarshipList() const {
 	return warships;
-}
-
-void Battlefield::spawnShips() {
-	//int x = 0;
-	//int y = 0;
-	//while (getCell(x, y) != WATER) {
-	//	if (x < width) {
-	//		x++;
-	//	} else {
-	//		x = 0;
-	//		y++;
-	//	}
-	//}
-	//Warship_Corvette ship();
-	//SDL_Rect coords;
-	//coords.x = x;
-	//coords.y = y;
-	//ship.setLocation(coords);
-	//addWarship(ship);
 }

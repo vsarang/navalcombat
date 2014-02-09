@@ -45,13 +45,13 @@ class Battlefield {
 		int getWidth() const;
 		int getHeight() const;
 		int getCell(int x, int y) const;
-		void addWarship(const Warship & ship);
+		void addWarship(int team, const Warship & ship);
 		std::vector<Warship> getWarshipList() const;
-		void spawnShips();
 
 	private:
 		int** maparray;
 		std::vector<Warship> warships;
+		std::vector<int> warshipmask;
 		int height;
 		int width;
 		static const int WATER = 0;
