@@ -48,6 +48,7 @@ class Battlefield {
 		void addWarship(const Warship & ship);
 		std::vector<Warship> getWarshipList() const;
 		void spawnShips();
+        void spawnShip(SDL_Rect loc, size_t type);
 
 	private:
 		int** maparray;

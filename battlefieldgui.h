@@ -51,6 +51,7 @@ class BattlefieldGUI {
 		static const int COAST_DIAGONAL_SPRITESHEET = 4;
 		static const int COAST_PENINSULA_SPRITESHEET = 5;
 		static const int WHITE_BORDER = 6;
+        SDL_Surface* shipTiles[1];
 
  		bool load_files();
  		void clean_up();
@@ -61,6 +62,7 @@ class BattlefieldGUI {
 		void rightClick(const SDL_Rect & coords);
 		void drawMap();
 		void drawWarships();
+        void drawWarship(const Warship ship);
 		SDL_Rect coordsToGrid(const SDL_Rect & coords);
 };
 

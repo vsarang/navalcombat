@@ -174,10 +174,16 @@ void Battlefield::spawnShips() {
 			y++;
 		}
 	}
-	Warship_Corvette ship();
+	Warship_Corvette ship;
 	SDL_Rect coords;
 	coords.x = x;
 	coords.y = y;
 	ship.setLocation(coords);
 	addWarship(ship);
+}
+
+void Battlefield::spawnShip(SDL_Rect loc, size_t type) {
+    Warship_Corvette ship;
+    ship.setLocation(loc);
+    addWarship(ship);
 }

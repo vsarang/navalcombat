@@ -33,19 +33,14 @@ BattlefieldGUI::~BattlefieldGUI() {
 SDL_Surface * BattlefieldGUI::load_image(std::string filename) {
 	// temporary storage for the image that's loaded
 	SDL_Surface * loadedImage = NULL;
-
 	// the optimized image that will be used
 	SDL_Surface * optimizedImage = NULL;
-
 	// load the image
-	loadedImage = IMG_Load(filename.c_str())
-;
+	loadedImage = IMG_Load(filename.c_str());
 	// if nothing went wrong
 	if (loadedImage != NULL) {
-
 		// create an optimized image
 		optimizedImage = SDL_DisplayFormat(loadedImage);
-
 		SDL_FreeSurface(loadedImage);
 		if (optimizedImage != NULL) {
 			// map the color key
@@ -53,7 +48,6 @@ SDL_Surface * BattlefieldGUI::load_image(std::string filename) {
 			SDL_SetColorKey(optimizedImage, SDL_SRCCOLORKEY, colorkey);
 		}
 	}
-
 	// return the optimized image
 	return optimizedImage;
 }
@@ -81,6 +75,8 @@ bool BattlefieldGUI::load_files() {
 			return false;
 		}
 	}
+    shipTiles[0] = load_image("img/warships/corvette.png");
+
 	return true;
 }
 
@@ -167,14 +163,14 @@ void BattlefieldGUI::drawMap() {
 void BattlefieldGUI::drawWarships() {
 	std::vector<Warship> warships = battlefield->getWarshipList();
 	for (int i = 0; i < warships.size(); i++) {
-		SDL_Rect loc = warships[i].getLocation();
+		//drawWarship(warships[i]);
 	}
 }
 
-void BattlefieldGUI::drawWarship(Warship ship) {
+void BattlefieldGUI::drawWarship(const Warship ship) {
 	SDL_Rect loc = ship.getLocation();
-	int rot = ship.getRotation();
-	
+	int rot = ship.getRotation();	
+	apply_surface(loc.x, loc.y, shipTiles[ship.getWarshipType()], screen);
 }
 
 int BattlefieldGUI::run() {
@@ -270,6 +266,8 @@ void BattlefieldGUI::leftClick(const SDL_Rect & coords) {
 	grid_pos.x = coords.x/20;
 	grid_pos.y = coords.y/20;
 	if (grid_pos.x >= 0 && grid_pos.y >= 0 && grid_pos.x < battlefield->getWidth() && grid_pos.y < battlefield->getHeight()) {
+        //std::cout << "click" << std::endl;
+        battlefield->spawnShip(grid_pos, 0);
 	}
 }
 
