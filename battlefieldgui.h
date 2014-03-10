@@ -42,15 +42,12 @@ class BattlefieldGUI {
 		Warship* selected_warship;
 
 		SDL_Rect clip[4];
-		static const int num_tiles = 7;
+		static const int num_tiles = 4;
 		SDL_Surface* tiles[num_tiles];
 		static const int WATER_FULL = 0;
 		static const int LAND_FULL = 1;
 		static const int TILE_BLACK = 2;
-		static const int LAND_ISLAND = 3;
-		static const int COAST_DIAGONAL_SPRITESHEET = 4;
-		static const int COAST_PENINSULA_SPRITESHEET = 5;
-		static const int WHITE_BORDER = 6;
+		static const int WHITE_BORDER = 3;
         SDL_Surface* shipTiles[1];
 
  		bool load_files();
@@ -62,7 +59,7 @@ class BattlefieldGUI {
 		void rightClick(const SDL_Rect & coords);
 		void drawMap();
 		void drawWarships();
-        void drawWarship(const Warship ship);
+        void drawWarship(const Warship* ship);
 		SDL_Rect coordsToGrid(const SDL_Rect & coords);
 };
 

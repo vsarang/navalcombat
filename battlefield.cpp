@@ -42,6 +42,10 @@ void Battlefield::clear() {
 		delete [] maparray[i];
 		maparray[i] = NULL;
 	}
+    for (int i = 0; i < warships.size(); i++) {
+        delete warships[i];
+        warships[i] = NULL;
+    }
 	// free both arrays pointers as well
 	delete [] maparray;
 	maparray = NULL;
@@ -155,35 +159,19 @@ int Battlefield::getHeight() const {
 	return height;
 }
 
-void Battlefield::addWarship(const Warship & ship) {
-	warships.push_back(ship);
+void Battlefield::addWarship(Warship* ship) {
+    warships.push_back(ship);
 }
 
-std::vector<Warship> Battlefield::getWarshipList() const {
+std::vector<Warship*> Battlefield::getWarshipList() const {
 	return warships;
 }
 
 void Battlefield::spawnShips() {
-	int x = 0;
-	int y = 0;
-	while (getCell(x, y) != WATER) {
-		if (x < width) {
-			x++;
-		} else {
-			x = 0;
-			y++;
-		}
-	}
-	Warship_Corvette ship;
-	SDL_Rect coords;
-	coords.x = x;
-	coords.y = y;
-	ship.setLocation(coords);
-	addWarship(ship);
 }
 
 void Battlefield::spawnShip(SDL_Rect loc, size_t type) {
-    Warship_Corvette ship;
-    ship.setLocation(loc);
-    addWarship(ship);
+    Warship_Corvette* temp = new Warship_Corvette();
+    temp->setLocation(loc);
+    addWarship(temp);
 }

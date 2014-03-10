@@ -63,9 +63,6 @@ void BattlefieldGUI::apply_surface(int x, int y, SDL_Surface * source, SDL_Surfa
 }
 
 bool BattlefieldGUI::load_files() {
-	tiles[COAST_DIAGONAL_SPRITESHEET] = load_image("img/tiles/coast_diagonal.png");
-	tiles[COAST_PENINSULA_SPRITESHEET] = load_image("img/tiles/coast_peninsula.png");
-	tiles[LAND_ISLAND] = load_image("img/tiles/coast_island.png");
 	tiles[LAND_FULL] = load_image("img/tiles/land_full.png");
 	tiles[WATER_FULL] = load_image("img/tiles/water_full.png");
 	tiles[TILE_BLACK] = load_image("img/tiles/black.png");
@@ -122,8 +119,6 @@ void BattlefieldGUI::drawMap() {
 	int endx = (camera.x + screen_width)/20;
 	int endy = (camera.y + screen_height)/20;
 
-	//std::cout << startx << " | " << camera.x << std::endl;
-
 	int mapstartx = startx;
 	int mapstarty = starty;
 	// draw black to the left and top of the map
@@ -161,20 +156,19 @@ void BattlefieldGUI::drawMap() {
 }
 
 void BattlefieldGUI::drawWarships() {
-	std::vector<Warship> warships = battlefield->getWarshipList();
-	for (int i = 0; i < warships.size(); i++) {
-		//drawWarship(warships[i]);
-	}
+    std::vector<Warship*> warships = battlefield->getWarshipList();
+    for (int i = 0; i < warships.size(); i++) {
+        drawWarship(warships[i]);
+    }
 }
 
-void BattlefieldGUI::drawWarship(const Warship ship) {
-	SDL_Rect loc = ship.getLocation();
-	int rot = ship.getRotation();	
-	apply_surface(loc.x, loc.y, shipTiles[ship.getWarshipType()], screen);
+void BattlefieldGUI::drawWarship(const Warship* ship) {
+	int relx = ship->getLocation().x*20 - camera.x;
+	int rely = ship->getLocation().y*20 - camera.y;
+    apply_surface(relx, rely, shipTiles[0], screen);
 }
 
 int BattlefieldGUI::run() {
-	//moveCamera(1,1);
 	drawMap();
 	bool quit = false;
 	bool scrollRight = false;
@@ -266,7 +260,6 @@ void BattlefieldGUI::leftClick(const SDL_Rect & coords) {
 	grid_pos.x = coords.x/20;
 	grid_pos.y = coords.y/20;
 	if (grid_pos.x >= 0 && grid_pos.y >= 0 && grid_pos.x < battlefield->getWidth() && grid_pos.y < battlefield->getHeight()) {
-        //std::cout << "click" << std::endl;
         battlefield->spawnShip(grid_pos, 0);
 	}
 }
