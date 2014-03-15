@@ -39,7 +39,6 @@ class BattlefieldGUI {
 		std::string frame_title;
 		Timer fps;
 		SDL_Surface* screen;
-		Warship* selected_warship;
 
 		SDL_Rect clip[4];
 		static const int num_tiles = 4;
@@ -60,6 +59,7 @@ class BattlefieldGUI {
 		void drawMap();
 		void drawWarships();
         void drawWarship(const Warship* ship);
+        void drawHUD();
 		SDL_Rect coordsToGrid(const SDL_Rect & coords);
 };
 

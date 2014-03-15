@@ -8,15 +8,14 @@
 
 BattlefieldGUI::BattlefieldGUI(Battlefield* b) {
 	battlefield = b;
-	camera.x = 0;
+	camera.x = -180;
 	camera.y = 0;
 	screen = NULL;
-	screen_width = 640;
-	screen_height = 480;
+	screen_width = 1280;
+	screen_height = 700;
 	screen_bpp = 32;
 	frame_title = "title";
 	scroll_speed = 3;
-	selected_warship = NULL;
 	if (!init()) {
 		std::cout << "failed to initialize" << std::endl;
 	}
@@ -40,12 +39,12 @@ SDL_Surface * BattlefieldGUI::load_image(std::string filename) {
 	// if nothing went wrong
 	if (loadedImage != NULL) {
 		// create an optimized image
-		optimizedImage = SDL_DisplayFormat(loadedImage);
+		optimizedImage = SDL_DisplayFormatAlpha(loadedImage);
 		SDL_FreeSurface(loadedImage);
 		if (optimizedImage != NULL) {
 			// map the color key
-			Uint32 colorkey = SDL_MapRGB(optimizedImage->format, 0, 0xFF, 0xFF);
-			SDL_SetColorKey(optimizedImage, SDL_SRCCOLORKEY, colorkey);
+			//Uint32 colorkey = SDL_MapRGB(optimizedImage->format, 0xFE, 0xFE, 0xFE);
+			//SDL_SetColorKey(optimizedImage, SDL_SRCCOLORKEY, colorkey);
 		}
 	}
 	// return the optimized image
@@ -155,8 +154,19 @@ void BattlefieldGUI::drawMap() {
 	}
 }
 
+void BattlefieldGUI::drawHUD() {
+    SDL_Rect outline = {0, 0, 152, screen_height};
+    SDL_Rect bound = {0, 0, 150, screen_height};
+    SDL_FillRect(screen, &outline, 0x777777);
+    SDL_FillRect(screen, &bound, 0x222222);
+}
+
 void BattlefieldGUI::drawWarships() {
-    std::vector<Warship*> warships = battlefield->getWarshipList();
+    std::vector<Warship*> warships = battlefield->getWarshipList(0);
+    for (int i = 0; i < warships.size(); i++) {
+        drawWarship(warships[i]);
+    }
+    warships = battlefield->getWarshipList(1);
     for (int i = 0; i < warships.size(); i++) {
         drawWarship(warships[i]);
     }
@@ -175,6 +185,7 @@ int BattlefieldGUI::run() {
 	bool scrollLeft = false;
 	bool scrollUp = false;
 	bool scrollDown = false;
+    SDL_Rect mouse_relative;
 	SDL_Rect mouse_grid;
 	while (quit == false) {
 		// start frame timer
@@ -215,11 +226,9 @@ int BattlefieldGUI::run() {
 			}
 			// process mouse movement
 			if (event.type == SDL_MOUSEMOTION) {
-				SDL_Rect coords;
-				SDL_Rect grid;
-				coords.x = event.motion.x + camera.x;
-				coords.y = event.motion.y + camera.y;
-				mouse_grid = coordsToGrid(coords);
+				mouse_relative.x = event.motion.x + camera.x;
+				mouse_relative.y = event.motion.y + camera.y;
+				mouse_grid = coordsToGrid(mouse_relative);
 			}
 		}
 
@@ -238,7 +247,8 @@ int BattlefieldGUI::run() {
 		}
 		drawMap();
 		drawWarships();
-		drawTile(mouse_grid.x, mouse_grid.y, WHITE_BORDER);
+		drawTile(mouse_grid.x, mouse_grid.y, WHITE_BORDER); // draw border for selected grid cell
+        drawHUD();
 		if (SDL_Flip(screen) == -1) {
 			return 1;
 		}
@@ -260,7 +270,7 @@ void BattlefieldGUI::leftClick(const SDL_Rect & coords) {
 	grid_pos.x = coords.x/20;
 	grid_pos.y = coords.y/20;
 	if (grid_pos.x >= 0 && grid_pos.y >= 0 && grid_pos.x < battlefield->getWidth() && grid_pos.y < battlefield->getHeight()) {
-        battlefield->spawnShip(grid_pos, 0);
+        battlefield->spawnShip(grid_pos, 0, 0);
 	}
 }
 
