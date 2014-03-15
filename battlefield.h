@@ -45,14 +45,18 @@ class Battlefield {
 		int getWidth() const;
 		int getHeight() const;
 		int getCell(int x, int y) const;
-		void addWarship(Warship* ship);
-		std::vector<Warship*> getWarshipList() const;
+		void addWarship(Warship* ship, size_t team);
+		std::vector<Warship*> getWarshipList(size_t team) const;
 		void spawnShips();
-        void spawnShip(SDL_Rect loc, size_t type);
+        void spawnShip(SDL_Rect loc, size_t type, size_t team);
+        void select(SDL_Rect loc);
 
 	private:
 		int** maparray;
-        std::vector<Warship*> warships;
+        std::vector<Warship*> warships_a;
+        std::vector<Warship*> warships_b;
+        int selected_warship;
+        int turn;
 		int height;
 		int width;
 		static const int WATER = 0;

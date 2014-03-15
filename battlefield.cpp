@@ -9,6 +9,7 @@
 Battlefield::Battlefield(int w, int h) {
 	width = w;
 	height = h;
+    selected_warship = -1;
 
 	// initialize maparray to all zeroes and warshipmap to all null pointers
 	maparray = new int*[w];
@@ -42,9 +43,13 @@ void Battlefield::clear() {
 		delete [] maparray[i];
 		maparray[i] = NULL;
 	}
-    for (int i = 0; i < warships.size(); i++) {
-        delete warships[i];
-        warships[i] = NULL;
+    for (int i = 0; i < warships_a.size(); i++) {
+        delete warships_a[i];
+        warships_a[i] = NULL;
+    }
+    for (int i = 0; i < warships_b.size(); i++) {
+        delete warships_b[i];
+        warships_b[i] = NULL;
     }
 	// free both arrays pointers as well
 	delete [] maparray;
@@ -159,19 +164,46 @@ int Battlefield::getHeight() const {
 	return height;
 }
 
-void Battlefield::addWarship(Warship* ship) {
-    warships.push_back(ship);
+void Battlefield::addWarship(Warship* ship, size_t team) {
+    if (team == 0)
+        warships_a.push_back(ship);
+    else
+        warships_b.push_back(ship);
 }
 
-std::vector<Warship*> Battlefield::getWarshipList() const {
-	return warships;
+std::vector<Warship*> Battlefield::getWarshipList(size_t team) const {
+	if (team == 0)
+        return warships_a;
+    else
+        return warships_b;
+
 }
 
 void Battlefield::spawnShips() {
 }
 
-void Battlefield::spawnShip(SDL_Rect loc, size_t type) {
+void Battlefield::spawnShip(SDL_Rect loc, size_t type, size_t team) {
     Warship_Corvette* temp = new Warship_Corvette();
     temp->setLocation(loc);
-    addWarship(temp);
+    addWarship(temp, team);
+}
+
+void Battlefield::select(SDL_Rect loc) {
+    if (turn % 2 == 0) {
+        for (int i = 0; i < warships_a.size(); i++) {
+            SDL_Rect temp = warships_a[i]->getLocation();
+            if (temp.x == loc.x && temp.y == loc.y) {
+                selected_warship = i;
+                return;
+            }
+        }
+    } else {
+        for (int i = 0; i < warships_b.size(); i++) {
+            SDL_Rect temp = warships_b[i]->getLocation();
+            if (temp.x == loc.x && temp.y == loc.y) {
+                selected_warship = i;
+                return;
+            }
+        }
+    }
 }
