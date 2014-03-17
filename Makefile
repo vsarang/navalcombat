@@ -3,7 +3,7 @@ EXENAME = navalcombat
 COMPILER = g++
 WARNINGS = -Wchar-subscripts -Wparentheses -Wreturn-type -Wmissing-braces -Wundef -Wshadow
 COMPILER_OPTS = -c -g -O0 -Wfatal-errors -Werror $(WARNINGS)
-LSDL = -lSDL -lSDL_image
+LSDL = -lSDL -lSDL_image -lSDL_ttf
 
 all: $(EXENAME)
 

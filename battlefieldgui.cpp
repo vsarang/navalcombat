@@ -11,11 +11,13 @@ BattlefieldGUI::BattlefieldGUI(Battlefield* b) {
 	camera.x = -180;
 	camera.y = 0;
 	screen = NULL;
+    font = NULL;
 	screen_width = 1280;
 	screen_height = 700;
 	screen_bpp = 32;
 	frame_title = "title";
 	scroll_speed = 3;
+    warship_selected = false;
 	if (!init()) {
 		std::cout << "failed to initialize" << std::endl;
 	}
@@ -72,6 +74,7 @@ bool BattlefieldGUI::load_files() {
 		}
 	}
     shipTiles[0] = load_image("img/warships/corvette.png");
+    font = TTF_OpenFont("fonts/hooge0553.ttf", 20);
 
 	return true;
 }
@@ -90,7 +93,10 @@ bool BattlefieldGUI::init() {
 	// initialize all SDL subsystems
 	if (SDL_Init(SDL_INIT_EVERYTHING) == -1) {
 		return false;
-	}	
+	}
+    if (TTF_Init() == -1) {
+        return false;
+    }
 	// set up screen
 	screen = SDL_SetVideoMode(screen_width,
 					screen_height,
@@ -159,6 +165,12 @@ void BattlefieldGUI::drawHUD() {
     SDL_Rect bound = {0, 0, 150, screen_height};
     SDL_FillRect(screen, &outline, 0x777777);
     SDL_FillRect(screen, &bound, 0x222222);
+    // draw menu options if there is a ship selected
+    if (warship_selected) {
+        SDL_Color textColor = {255, 255, 255};
+        SDL_Surface* message = TTF_RenderText_Solid(font, "HUD", textColor);
+        apply_surface(50, 100, message, screen);
+    }
 }
 
 void BattlefieldGUI::drawWarships() {
@@ -197,6 +209,13 @@ int BattlefieldGUI::run() {
 			}
 			// process key presses
 			if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) {
+                // get mouse position
+                SDL_Rect grid_pos;
+                int temp_x;
+                int temp_y;
+                SDL_GetMouseState(&temp_x, &temp_y);
+                grid_pos.x = (temp_x + camera.x)/20;
+                grid_pos.y = (temp_y + camera.y)/20;
 				switch (event.key.keysym.sym) {
 					case SDLK_RIGHT:
 						scrollRight = (event.type == SDL_KEYDOWN);
@@ -210,6 +229,19 @@ int BattlefieldGUI::run() {
 					case SDLK_DOWN:
 						scrollDown = (event.type == SDL_KEYDOWN);
 						break;
+                    case SDLK_s:
+                        // spawn ship on team a
+	                    if (grid_pos.x >= 0 && grid_pos.y >= 0 && grid_pos.x < battlefield->getWidth() && grid_pos.y < battlefield->getHeight()) {
+                            battlefield->spawnShip(grid_pos, 0, 0);
+                        }
+                        break;
+                    case SDLK_d:
+                        // spawn ship on team b
+	                    if (grid_pos.x >= 0 && grid_pos.y >= 0 && grid_pos.x < battlefield->getWidth() && grid_pos.y < battlefield->getHeight()) {
+                            battlefield->spawnShip(grid_pos, 0, 1);
+                        }
+                        break;
+ 
 				}
 			}
 			// process mouse clicks
@@ -270,14 +302,11 @@ void BattlefieldGUI::leftClick(const SDL_Rect & coords) {
 	grid_pos.x = coords.x/20;
 	grid_pos.y = coords.y/20;
 	if (grid_pos.x >= 0 && grid_pos.y >= 0 && grid_pos.x < battlefield->getWidth() && grid_pos.y < battlefield->getHeight()) {
-        battlefield->spawnShip(grid_pos, 0, 0);
+        warship_selected = battlefield->select(grid_pos);
 	}
 }
 
 void BattlefieldGUI::rightClick(const SDL_Rect & coords) {
-	SDL_Rect grid_pos;
-	grid_pos.x = coords.x/20;
-	grid_pos.y = coords.y/20;
 }
 
 SDL_Rect BattlefieldGUI::coordsToGrid(const SDL_Rect & coords) {

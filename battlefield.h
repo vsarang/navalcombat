@@ -49,7 +49,7 @@ class Battlefield {
 		std::vector<Warship*> getWarshipList(size_t team) const;
 		void spawnShips();
         void spawnShip(SDL_Rect loc, size_t type, size_t team);
-        void select(SDL_Rect loc);
+        bool select(SDL_Rect loc);
 
 	private:
 		int** maparray;

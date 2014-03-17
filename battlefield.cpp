@@ -188,13 +188,13 @@ void Battlefield::spawnShip(SDL_Rect loc, size_t type, size_t team) {
     addWarship(temp, team);
 }
 
-void Battlefield::select(SDL_Rect loc) {
+bool Battlefield::select(SDL_Rect loc) {
     if (turn % 2 == 0) {
         for (int i = 0; i < warships_a.size(); i++) {
             SDL_Rect temp = warships_a[i]->getLocation();
             if (temp.x == loc.x && temp.y == loc.y) {
                 selected_warship = i;
-                return;
+                return true;
             }
         }
     } else {
@@ -202,8 +202,9 @@ void Battlefield::select(SDL_Rect loc) {
             SDL_Rect temp = warships_b[i]->getLocation();
             if (temp.x == loc.x && temp.y == loc.y) {
                 selected_warship = i;
-                return;
+                return true;
             }
         }
     }
+    return false;
 }

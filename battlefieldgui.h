@@ -39,6 +39,8 @@ class BattlefieldGUI {
 		std::string frame_title;
 		Timer fps;
 		SDL_Surface* screen;
+        TTF_Font* font;
+        bool warship_selected;
 
 		SDL_Rect clip[4];
 		static const int num_tiles = 4;
