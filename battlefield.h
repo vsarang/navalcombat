@@ -18,6 +18,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <queue>
 
 class Battlefield {
 	public:
@@ -42,6 +43,7 @@ class Battlefield {
 		void generateMap();
 		void printMap() const;
 		int** getMapArray() const;
+        int** getMoveMask() const;
 		int getWidth() const;
 		int getHeight() const;
 		int getCell(int x, int y) const;
@@ -53,9 +55,9 @@ class Battlefield {
 
 	private:
 		int** maparray;
-        std::vector<Warship*> warships_a;
-        std::vector<Warship*> warships_b;
-        int selected_warship;
+        int** movearray;
+        std::vector< std::vector<Warship*> > warships;
+        Warship* selected_warship;
         int turn;
 		int height;
 		int width;
@@ -65,6 +67,7 @@ class Battlefield {
 		void generateIsland(int x, int y, int prevX, int prevY, int iterations);
 		bool shouldGrow(int iterations) const;
 		bool validLocation(int x, int y) const;
+        void markValidMoves();
 };
 
 #endif

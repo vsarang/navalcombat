@@ -65,6 +65,7 @@ class Warship {
 		void setLocation(const SDL_Rect & coords);
 		int getWarshipType() const;
 		int getRotation() const;
+        int getMoverange() const;
 		SDL_Rect getLocation() const;
 
 	protected:
@@ -87,6 +88,7 @@ class Warship {
 		int armor;
 		int weaponcount;
 		int warshiptype;
+        int moverange;
 		SDL_Rect location;
 		Weapon* weapons;
 };

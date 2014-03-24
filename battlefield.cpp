@@ -9,16 +9,23 @@
 Battlefield::Battlefield(int w, int h) {
 	width = w;
 	height = h;
-    selected_warship = -1;
+    selected_warship = NULL;
+    std::vector<Warship*> a;
+    std::vector<Warship*> b;
+    warships.push_back(a);
+    warships.push_back(b);
 
 	// initialize maparray to all zeroes and warshipmap to all null pointers
 	maparray = new int*[w];
+    movearray = new int*[w];
 	for (int x = 0; x < w; x++) {
 		maparray[x] = new int[h];
+        movearray[x] = new int[h];
 		for (int y = 0; y < h; y++) {
 			maparray[x][y] = 0;
 		}
-	}
+    }
+
 	srand(time(NULL));
 }
 
@@ -39,21 +46,25 @@ Battlefield & Battlefield::operator=(const Battlefield & other) {
 
 void Battlefield::clear() {
 	for (int i = 0; i < width; i++) {
-		// free every column in both warshipmap and maparray
+		// free every column in both movearray and maparray
 		delete [] maparray[i];
+        delete [] movearray[i];
 		maparray[i] = NULL;
+        movearray[i] = NULL;
 	}
-    for (int i = 0; i < warships_a.size(); i++) {
-        delete warships_a[i];
-        warships_a[i] = NULL;
+    for (int i = 0; i < warships[0].size(); i++) {
+        delete warships[0][i];
+        warships[0][i] = NULL;
     }
-    for (int i = 0; i < warships_b.size(); i++) {
-        delete warships_b[i];
-        warships_b[i] = NULL;
+    for (int i = 0; i < warships[1].size(); i++) {
+        delete warships[1][i];
+        warships[1][i] = NULL;
     }
 	// free both arrays pointers as well
 	delete [] maparray;
+    delete [] movearray;
 	maparray = NULL;
+    movearray = NULL;
 }
 
 void Battlefield::copy(const Battlefield & other) {
@@ -148,6 +159,10 @@ int** Battlefield::getMapArray() const {
 	return maparray;
 }
 
+int** Battlefield::getMoveMask() const {
+    return movearray;
+}
+
 int Battlefield::getCell(int x, int y) const {
 	if (x >= 0 && y >= 0 && x < width && y < height) {
 		return maparray[x][y];
@@ -165,18 +180,11 @@ int Battlefield::getHeight() const {
 }
 
 void Battlefield::addWarship(Warship* ship, size_t team) {
-    if (team == 0)
-        warships_a.push_back(ship);
-    else
-        warships_b.push_back(ship);
+    warships[team].push_back(ship);
 }
 
 std::vector<Warship*> Battlefield::getWarshipList(size_t team) const {
-	if (team == 0)
-        return warships_a;
-    else
-        return warships_b;
-
+    return warships[team];
 }
 
 void Battlefield::spawnShips() {
@@ -189,22 +197,68 @@ void Battlefield::spawnShip(SDL_Rect loc, size_t type, size_t team) {
 }
 
 bool Battlefield::select(SDL_Rect loc) {
-    if (turn % 2 == 0) {
-        for (int i = 0; i < warships_a.size(); i++) {
-            SDL_Rect temp = warships_a[i]->getLocation();
-            if (temp.x == loc.x && temp.y == loc.y) {
-                selected_warship = i;
-                return true;
-            }
-        }
-    } else {
-        for (int i = 0; i < warships_b.size(); i++) {
-            SDL_Rect temp = warships_b[i]->getLocation();
-            if (temp.x == loc.x && temp.y == loc.y) {
-                selected_warship = i;
-                return true;
-            }
+    size_t team = turn % 2;
+    for (int i = 0; i < warships[team].size(); i++) {
+        SDL_Rect temp = warships[team][i]->getLocation();
+        if (temp.x == loc.x && temp.y == loc.y) {
+            selected_warship = warships[team][i];
+            markValidMoves();
+            return true;
         }
     }
+    selected_warship = NULL;
+    markValidMoves();
     return false;
+}
+
+void Battlefield::markValidMoves() {
+    // set up map mask for valid move spaces
+    for (int i = 0; i < width; i++) {
+        for (int j = 0; j < height; j++) {
+            movearray[i][j] = 0;
+        }
+    }
+    if (selected_warship == NULL) {
+        // no selected warship, there are no valid moves
+        return;
+    }
+    // queue for a breadth first search
+    std::queue<SDL_Rect> queue;
+    std::queue<size_t> distance;
+    queue.push(selected_warship->getLocation());
+    distance.push(0);
+    while (queue.size() > 0) {
+        SDL_Rect temp = queue.front();
+        size_t dist = distance.front();
+        queue.pop();
+        distance.pop();
+        // make sure space is within move range and a water tile
+        if (dist <= selected_warship->getMoverange() && maparray[temp.x][temp.y] == 0) {
+            movearray[temp.x][temp.y] = 1;
+        } else {
+            continue;
+        }
+        // add surrounding spaces to queue if they haven't yet been searched
+        temp.x += 1;
+        if (temp.x < width && movearray[temp.x][temp.y] == 0) {
+            queue.push(temp);
+            distance.push(dist+1);
+        }
+        temp.x -= 2;
+        if (temp.x >= 0 && movearray[temp.x][temp.y] == 0) {
+            queue.push(temp);
+            distance.push(dist+1);
+        }
+        temp.x += 1;
+        temp.y += 1;
+        if (temp.y < height && movearray[temp.x][temp.y] == 0) {
+            queue.push(temp);
+            distance.push(dist+1);
+        }
+        temp.y -= 2;
+        if (temp.y >= 0 && movearray[temp.x][temp.y] == 0) {
+            queue.push(temp);
+            distance.push(dist+1);
+        }
+    }
 }

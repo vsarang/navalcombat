@@ -68,6 +68,7 @@ bool BattlefieldGUI::load_files() {
 	tiles[WATER_FULL] = load_image("img/tiles/water_full.png");
 	tiles[TILE_BLACK] = load_image("img/tiles/black.png");
 	tiles[WHITE_BORDER] = load_image("img/tiles/white_border.png");
+    tiles[VALID_MOVE] = load_image("img/tiles/valid_move.png");
 	for (int i = 0; i < num_tiles; i++) {
 		if (tiles[i] == NULL) {
 			return false;
@@ -187,7 +188,18 @@ void BattlefieldGUI::drawWarships() {
 void BattlefieldGUI::drawWarship(const Warship* ship) {
 	int relx = ship->getLocation().x*20 - camera.x;
 	int rely = ship->getLocation().y*20 - camera.y;
-    apply_surface(relx, rely, shipTiles[0], screen);
+    apply_surface(relx, rely, shipTiles[ship->getWarshipType()], screen);
+}
+
+void BattlefieldGUI::drawMoveMask() {
+    int** moveMask = battlefield->getMoveMask();
+    for (int x = 0; x < battlefield->getWidth(); x++) {
+        for (int y = 0; y < battlefield->getHeight(); y++) {
+            if (moveMask[x][y] == 1) {
+                drawTile(x, y, VALID_MOVE);
+            }
+        }
+    }
 }
 
 int BattlefieldGUI::run() {
@@ -278,6 +290,7 @@ int BattlefieldGUI::run() {
 			moveCamera(0,scroll_speed);
 		}
 		drawMap();
+        drawMoveMask();
 		drawWarships();
 		drawTile(mouse_grid.x, mouse_grid.y, WHITE_BORDER); // draw border for selected grid cell
         drawHUD();

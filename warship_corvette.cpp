@@ -10,6 +10,7 @@ Warship_Corvette::Warship_Corvette() {
     location.x = 0;
     location.y = 0;
     sunk = false;
+    moverange = 5;
 
     weaponcount = 1;
     weapons = new Weapon[weaponcount];

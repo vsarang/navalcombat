@@ -110,3 +110,7 @@ int Warship::getRotation() const {
 int Warship::getWarshipType() const {
 	return warshiptype;
 }
+
+int Warship::getMoverange() const {
+    return moverange;
+}
