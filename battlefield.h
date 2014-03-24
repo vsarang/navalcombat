@@ -63,6 +63,7 @@ class Battlefield {
 		int width;
 		static const int WATER = 0;
 		static const int LAND = 1;
+        static const float ISLAND_SCALE = 200.0;
 
 		void generateIsland(int x, int y, int prevX, int prevY, int iterations);
 		bool shouldGrow(int iterations) const;

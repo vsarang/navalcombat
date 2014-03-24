@@ -123,9 +123,9 @@ void Battlefield::generateIsland(int x, int y, int prevX, int prevY, int iterati
 bool Battlefield::shouldGrow(int iterations) const {
 	float scale = 0;
 	if (width < height) {
-		scale = 200.0/width;
+		scale = ISLAND_SCALE/width;
 	} else {
-		scale = 200.0/height;
+		scale = ISLAND_SCALE/height;
 	}
 	return ((float)(rand() % 100)) > iterations*scale;
 }

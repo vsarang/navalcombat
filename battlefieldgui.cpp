@@ -113,17 +113,17 @@ bool BattlefieldGUI::init() {
 }
 
 void BattlefieldGUI::drawTile(int grid_x, int grid_y, int tile) {
-	int relx = grid_x*20 - camera.x;
-	int rely = grid_y*20 - camera.y;
+	int relx = grid_x*TILE_SIZE - camera.x;
+	int rely = grid_y*TILE_SIZE - camera.y;
 	apply_surface(relx, rely, tiles[tile], screen);
 }
 
 void BattlefieldGUI::drawMap() {
 	// find the bounding rectangle of the camera
-	int startx = (camera.x/20)-1;
-	int starty = (camera.y/20)-1;
-	int endx = (camera.x + screen_width)/20;
-	int endy = (camera.y + screen_height)/20;
+	int startx = (camera.x/TILE_SIZE)-1;
+	int starty = (camera.y/TILE_SIZE)-1;
+	int endx = (camera.x + screen_width)/TILE_SIZE;
+	int endy = (camera.y + screen_height)/TILE_SIZE;
 
 	int mapstartx = startx;
 	int mapstarty = starty;
@@ -161,16 +161,16 @@ void BattlefieldGUI::drawMap() {
 	}
 }
 
-void BattlefieldGUI::drawHUD() {
-    SDL_Rect outline = {0, 0, 152, screen_height};
-    SDL_Rect bound = {0, 0, 150, screen_height};
-    SDL_FillRect(screen, &outline, 0x777777);
-    SDL_FillRect(screen, &bound, 0x222222);
+void BattlefieldGUI::drawSidebar() {
+    SDL_Rect outline = {0, 0, SIDEBAR_WIDTH+2, screen_height};
+    SDL_Rect bound = {0, 0, SIDEBAR_WIDTH, screen_height};
+    SDL_FillRect(screen, &outline, SIDEBAR_BORDER_COLOR);
+    SDL_FillRect(screen, &bound, SIDEBAR_BACKGROUND_COLOR);
     // draw menu options if there is a ship selected
     if (warship_selected) {
-        SDL_Color textColor = {255, 255, 255};
-        SDL_Surface* message = TTF_RenderText_Solid(font, "HUD", textColor);
-        apply_surface(50, 100, message, screen);
+        SDL_Color textColor = {(Uint8)(TEXT_COLOR >> 24), (Uint8)(TEXT_COLOR >> 16), (Uint8)(TEXT_COLOR >> 8)};
+        SDL_Surface* message = TTF_RenderText_Solid(font, "SIDEBAR", textColor);
+        apply_surface(10, 100, message, screen);
     }
 }
 
@@ -186,8 +186,8 @@ void BattlefieldGUI::drawWarships() {
 }
 
 void BattlefieldGUI::drawWarship(const Warship* ship) {
-	int relx = ship->getLocation().x*20 - camera.x;
-	int rely = ship->getLocation().y*20 - camera.y;
+	int relx = ship->getLocation().x*TILE_SIZE - camera.x;
+	int rely = ship->getLocation().y*TILE_SIZE - camera.y;
     apply_surface(relx, rely, shipTiles[ship->getWarshipType()], screen);
 }
 
@@ -226,8 +226,8 @@ int BattlefieldGUI::run() {
                 int temp_x;
                 int temp_y;
                 SDL_GetMouseState(&temp_x, &temp_y);
-                grid_pos.x = (temp_x + camera.x)/20;
-                grid_pos.y = (temp_y + camera.y)/20;
+                grid_pos.x = (temp_x + camera.x)/TILE_SIZE;
+                grid_pos.y = (temp_y + camera.y)/TILE_SIZE;
 				switch (event.key.keysym.sym) {
 					case SDLK_RIGHT:
 						scrollRight = (event.type == SDL_KEYDOWN);
@@ -270,9 +270,9 @@ int BattlefieldGUI::run() {
 			}
 			// process mouse movement
 			if (event.type == SDL_MOUSEMOTION) {
-				mouse_relative.x = event.motion.x + camera.x;
-				mouse_relative.y = event.motion.y + camera.y;
-				mouse_grid = coordsToGrid(mouse_relative);
+				//mouse_relative.x = event.motion.x + camera.x;
+				//mouse_relative.y = event.motion.y + camera.y;
+				//mouse_grid = coordsToGrid(mouse_relative);
 			}
 		}
 
@@ -293,7 +293,7 @@ int BattlefieldGUI::run() {
         drawMoveMask();
 		drawWarships();
 		drawTile(mouse_grid.x, mouse_grid.y, WHITE_BORDER); // draw border for selected grid cell
-        drawHUD();
+        drawSidebar();
 		if (SDL_Flip(screen) == -1) {
 			return 1;
 		}
@@ -312,8 +312,8 @@ void BattlefieldGUI::moveCamera(int x, int y) {
 
 void BattlefieldGUI::leftClick(const SDL_Rect & coords) {
 	SDL_Rect grid_pos;
-	grid_pos.x = coords.x/20;
-	grid_pos.y = coords.y/20;
+	grid_pos.x = coords.x/TILE_SIZE;
+	grid_pos.y = coords.y/TILE_SIZE;
 	if (grid_pos.x >= 0 && grid_pos.y >= 0 && grid_pos.x < battlefield->getWidth() && grid_pos.y < battlefield->getHeight()) {
         warship_selected = battlefield->select(grid_pos);
 	}
@@ -324,7 +324,7 @@ void BattlefieldGUI::rightClick(const SDL_Rect & coords) {
 
 SDL_Rect BattlefieldGUI::coordsToGrid(const SDL_Rect & coords) {
 	SDL_Rect grid;
-	grid.x = coords.x/20;
-	grid.y = coords.y/20;
+	grid.x = coords.x/TILE_SIZE;
+	grid.y = coords.y/TILE_SIZE;
 	return grid;
 }

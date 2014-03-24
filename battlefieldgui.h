@@ -31,6 +31,11 @@ class BattlefieldGUI {
 		void moveCamera(int x, int y);
 	private:
 		static const int FRAMES_PER_SECOND = 120;
+        static const int TILE_SIZE = 20;
+        static const int SIDEBAR_WIDTH = 150;
+        static const Uint32 SIDEBAR_BORDER_COLOR = 0x777777;
+        static const Uint32 SIDEBAR_BACKGROUND_COLOR = 0x222222;
+        static const Uint32 TEXT_COLOR = 0xFFFFFFFF;
 
 		int screen_width;
 		int screen_height;
@@ -62,7 +67,7 @@ class BattlefieldGUI {
 		void drawMap();
 		void drawWarships();
         void drawWarship(const Warship* ship);
-        void drawHUD();
+        void drawSidebar();
         void drawMoveMask();
 		SDL_Rect coordsToGrid(const SDL_Rect & coords);
 };
