@@ -59,7 +59,7 @@ class Warship {
 		virtual int getRange(int weaponindex) const;
 		/**
 		 * Sets the rotation of the ship. If an invalid parameter is given, the rotation is unchanged.
-		 * @param int rot The target rotation between 0 and 7.
+		 * @param int rot The target rotation between 0 and 3.
 		 */
 		void setRotation(int rot);
 		void setLocation(const SDL_Rect & coords);
@@ -71,15 +71,11 @@ class Warship {
 	protected:
 		bool sunk;
 		/**
-		 * The current rotation of the ship from 0 to 7.
+		 * The current rotation of the ship from 0 to 3.
 		 * 0 North
-		 * 1 Northeast
-		 * 2 East
-		 * 3 Southeast
-		 * 4 South
-		 * 5 Southwest
-		 * 6 West
-		 * 7 Northwest
+		 * 1 East
+		 * 2 South
+		 * 3 West
 		 */
 		int rotation;
 		int maxhealth;

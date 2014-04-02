@@ -90,7 +90,7 @@ int Warship::getRange(int weaponindex) const {
 }
 
 void Warship::setRotation(int rot) {
-	if (rot >= 0 && rot <= 7) {
+	if (rot >= 0 && rot <= 3) {
 		rotation = rot;
 	}
 }
