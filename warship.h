@@ -37,8 +37,6 @@ class Warship {
 		Warship(const Warship & other);
 		virtual Warship & operator=(const Warship & other);
 		virtual ~Warship();
-		virtual void copy(const Warship & other);
-		virtual void clear();
 		/**
 		 * Applies damage to the warship's armor and health based on the type of ammunition fired.
 		 * type 0 - Standard round, inflicts damage to armor until armor is reduced to zero, then inflicts damage to health.
@@ -87,5 +85,8 @@ class Warship {
         int moverange;
 		SDL_Rect location;
 		Weapon* weapons;
+
+		virtual void copy(const Warship & other);
+		virtual void clear();
 };
 #endif
